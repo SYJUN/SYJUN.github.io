@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="灰色の幽默">
 <meta property="og:description" content="以前只是在一些 mvc、mvvm 框架(angular、vue等)中使用 双向数据绑定 实现将文本区域中显示的内容显示在指定的区域。现在我使用原生 DOM 来模拟这种效果。首先简单设计一个简单的页面布局 1234&amp;lt;div class=&quot;test-wrap&quot;&amp;gt;	&amp;lt;textarea id=&quot;testWatch&quot; placeholder=&quot;请输入...&quot;&amp;gt;&amp;lt;/textare">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-13T02:41:37.000Z">
+<meta property="og:updated_time" content="2018-03-26T02:36:10.009Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="原生js实现实时监听输入的文本">
 <meta name="twitter:description" content="以前只是在一些 mvc、mvvm 框架(angular、vue等)中使用 双向数据绑定 实现将文本区域中显示的内容显示在指定的区域。现在我使用原生 DOM 来模拟这种效果。首先简单设计一个简单的页面布局 1234&amp;lt;div class=&quot;test-wrap&quot;&amp;gt;	&amp;lt;textarea id=&quot;testWatch&quot; placeholder=&quot;请输入...&quot;&amp;gt;&amp;lt;/textare">
@@ -314,7 +314,7 @@
     <link itemprop="mainEntityOfPage" href="https://syjun.github.io/2017/07/14/javascript-20170714原生js实现实时监听输入的文本/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Shinn">
+      <meta itemprop="name" content="石艷軍">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpeg">
     </span>
@@ -382,6 +382,11 @@
           
 
           
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
 
           
 
@@ -406,7 +411,18 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> $addEvent = <span class="function"><span class="keyword">function</span> (<span class="params">elem, eType, fn, useCapture</span>)</span>&#123;</div><div class="line">    <span class="keyword">if</span> (elem.addEventListener) &#123;</div><div class="line">        elem.addEventListener(eType, fn, useCapture);</div><div class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (elem.attachEvent) &#123;</div><div class="line">        <span class="keyword">var</span> r = elem.attachEvent(<span class="string">'on'</span> + eType, fn);</div><div class="line">        <span class="keyword">return</span> r;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        elem[<span class="string">'on'</span> + eType] = fn;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> element = <span class="built_in">document</span>.getElementById(<span class="string">'testWatch'</span>);</div><div class="line"></div><div class="line">$addEvent(element, <span class="string">'input'</span>, () =&gt; &#123;</div><div class="line">  <span class="built_in">document</span>.getElementById(<span class="string">"showTxt"</span>).innerHTML = element.value;</div><div class="line">&#125;, <span class="literal">false</span>);</div></pre></td></tr></table></figure>
 <p>好了,这样就已经实现我们想要的效果了</p>
 <p><a href="https://codepen.io/SYJUN/pen/qjvZvq" target="_blank" rel="external">实例地址</a></p>
-<iframe height="300" scrolling="no" title="实时显示文本框中输入的内容" src="//codepen.io/SYJUN/embed/qjvZvq/?height=300&theme-id=30470&default-tab=css,result&embed-version=2" frameborder="no" allowtransparency="true" allowfullscreen="true" style="width: 100%;">See the Pen <a href="https://codepen.io/SYJUN/pen/qjvZvq/" target="_blank" rel="external">实时显示文本框中输入的内容</a> by syjun (<a href="https://codepen.io/SYJUN" target="_blank" rel="external">@SYJUN</a>) on <a href="https://codepen.io" target="_blank" rel="external">CodePen</a>.<br></iframe>
+<iframe height="400" scrolling="no" title="实时显示文本框中输入的内容" src="//codepen.io/SYJUN/embed/qjvZvq/?height=265&theme-id=dark&default-tab=html&embed-version=2" frameborder="no" allowtransparency="true" allowfullscreen="true" style="width: 100%;">See the Pen <a href="https://codepen.io/SYJUN/pen/qjvZvq/" target="_blank" rel="external">实时显示文本框中输入的内容</a> by syjun (<a href="https://codepen.io/SYJUN" target="_blank" rel="external">@SYJUN</a>) on <a href="https://codepen.io" target="_blank" rel="external">CodePen</a>.<br></iframe>
+      
+    </div>
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
       
     </div>
 
@@ -435,9 +451,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/javascript/" rel="tag"># javascript</a>
+            <a href="/tags/javascript/" <i class="fa fa-tag"></i> javascript</a>
           
-            <a href="/tags/css3/" rel="tag"># css3</a>
+            <a href="/tags/css3/" <i class="fa fa-tag"></i> css3</a>
           
         </div>
       
@@ -514,8 +530,8 @@
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.jpeg"
-               alt="Shinn" />
-          <p class="site-author-name" itemprop="name">Shinn</p>
+               alt="石艷軍" />
+          <p class="site-author-name" itemprop="name">石艷軍</p>
            
               <p class="site-description motion-element" itemprop="description">你总是这样轻言放弃的话，无论过多久都只会原地踏步。</p>
           
@@ -569,6 +585,15 @@
                 </a>
               </span>
             
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/a28c201fe481" target="_blank" title="简书">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  简书
+                </a>
+              </span>
+            
           
         </div>
 
@@ -599,14 +624,15 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
+  &copy;  2017 - 
   <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">Shinn</span>
+  <span class="author" itemprop="copyrightHolder">石艷軍</span>
 </div>
 
+<!--
 
 <div class="powered-by">
   由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
@@ -619,8 +645,29 @@
   </a>
 </div>
 
+-->
 
         
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
 
         
       </div>

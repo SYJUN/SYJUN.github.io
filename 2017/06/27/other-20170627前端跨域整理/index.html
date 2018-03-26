@@ -1,0 +1,1166 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="跨域," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/uploads/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="跨域资源共享 CORS对于web开发来讲，由于浏览器的同源策略，我们需要经常使用一些 hack 的方法去跨域获取资源，但是hack的方法总归是hack。直到W3C出了一个标准－CORS－”跨域资源共享”（Cross-origin resource sharing）。它允许浏览器向跨源服务器，发出 XMLHttpRequest 请求，从而克服了 AJAX 只能同源使用的限制。">
+<meta name="keywords" content="跨域">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端跨域整理">
+<meta property="og:url" content="https://syjun.github.io/2017/06/27/other-20170627前端跨域整理/index.html">
+<meta property="og:site_name" content="灰色の幽默">
+<meta property="og:description" content="跨域资源共享 CORS对于web开发来讲，由于浏览器的同源策略，我们需要经常使用一些 hack 的方法去跨域获取资源，但是hack的方法总归是hack。直到W3C出了一个标准－CORS－”跨域资源共享”（Cross-origin resource sharing）。它允许浏览器向跨源服务器，发出 XMLHttpRequest 请求，从而克服了 AJAX 只能同源使用的限制。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://syjun.github.io/images/section-cross-domain-cors.png">
+<meta property="og:image" content="https://syjun.github.io/images/section-cross-domain-postmessage.png">
+<meta property="og:updated_time" content="2017-12-13T02:41:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="前端跨域整理">
+<meta name="twitter:description" content="跨域资源共享 CORS对于web开发来讲，由于浏览器的同源策略，我们需要经常使用一些 hack 的方法去跨域获取资源，但是hack的方法总归是hack。直到W3C出了一个标准－CORS－”跨域资源共享”（Cross-origin resource sharing）。它允许浏览器向跨源服务器，发出 XMLHttpRequest 请求，从而克服了 AJAX 只能同源使用的限制。">
+<meta name="twitter:image" content="https://syjun.github.io/images/section-cross-domain-cors.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://syjun.github.io/2017/06/27/other-20170627前端跨域整理/"/>
+
+
+
+
+
+  <title>前端跨域整理 | 灰色の幽默</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b8197adc4b3f693d9f3c14c792e39266";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">灰色の幽默</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">路漫漫其修远兮,吾将上下而求索</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://syjun.github.io/2017/06/27/other-20170627前端跨域整理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shinn">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="灰色の幽默">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">前端跨域整理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-27T17:39:44+08:00">
+                2017-06-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/跨域/" itemprop="url" rel="index">
+                    <span itemprop="name">跨域</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="跨域资源共享-CORS"><a href="#跨域资源共享-CORS" class="headerlink" title="跨域资源共享 CORS"></a>跨域资源共享 CORS</h1><p>对于web开发来讲，由于浏览器的同源策略，我们需要经常使用一些 <code>hack</code> 的方法去跨域获取资源，但是hack的方法总归是hack。直到W3C出了一个标准－CORS－”跨域资源共享”（<code>Cross-origin resource sharing</code>）。<br>它允许浏览器向跨源服务器，发出 <code>XMLHttpRequest</code> 请求，从而克服了 <code>AJAX</code> 只能同源使用的限制。</p>
+<a id="more"></a>
+<p>首先来说 <code>CORS</code> 需要浏览器和服务端同时支持的，对于兼容性来说主要是 <code>ie10+</code> ，其它现代浏览器都是支持的。</p>
+<p><a href="https://caniuse.com/#feat=cors" target="_blank" rel="external">https://caniuse.com/#feat=cors</a></p>
+<p><img src="/images/section-cross-domain-cors.png"></p>
+<p>使用 <code>CORS</code> 跨域的时候其实和普通的 <code>ajax</code> 过程是一样的，只是浏览器在发现这是一个跨域请求的时候会自动帮我们处理一些事，比如验证等等，所以说只要服务端提供支持，前端是不需要做额外的事情的。</p>
+<h2 id="两种请求"><a href="#两种请求" class="headerlink" title="两种请求"></a>两种请求</h2><p><code>CORS</code> 的请求分两种，这也是浏览器为了安全做的一些处理，不同情况下浏览器执行的操作也是不一样的，主要分为两种请求，当然这一切我们是不需要做额外处理的，浏览器会自动处理的。</p>
+<h2 id="简单请求（simple-request）"><a href="#简单请求（simple-request）" class="headerlink" title="简单请求（simple request）"></a>简单请求（simple request）</h2><p>只要同时满足以下两大条件，就属于简单请求。</p>
+<h2 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">1) 请求方法是以下三种方法中的一个：</div><div class="line">HEAD</div><div class="line">GET</div><div class="line">POST</div><div class="line"></div><div class="line">2）HTTP的头信息不超出以下几种字段：</div><div class="line">Accept</div><div class="line">Accept-Language</div><div class="line">Content-Language</div><div class="line">Last-Event-ID</div><div class="line">Content-Type：只限于三个值application/x-www-form-urlencoded、multipart/form-data、text/plain</div></pre></td></tr></table></figure>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>对于简单的跨域请求，浏览器会自动在请求的头信息加上 <code>Origin</code> 字段，表示本次请求来自哪个源（协议 + 域名 + 端口），服务端会获取到这个值，然后判断是否同意这次请求并返回。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// 请求</div><div class="line">GET /cors HTTP/1.1</div><div class="line">Origin: https://api.qiutc.me</div><div class="line">Host: api.alice.com</div><div class="line">Accept-Language: en-US</div><div class="line">Connection: keep-alive</div><div class="line">User-Agent: Mozilla/5.0...</div></pre></td></tr></table></figure>
+<h3 id="1-服务端允许"><a href="#1-服务端允许" class="headerlink" title="1.服务端允许"></a>1.服务端允许</h3><p>如果服务端许可本次请求，就会在返回的头信息多出几个字段：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// 返回</div><div class="line">Access-Control-Allow-Origin: https://api.qiutc.me</div><div class="line">Access-Control-Allow-Credentials: true</div><div class="line">Access-Control-Expose-Headers: Info</div><div class="line">Content-Type: text/html; charset=utf-8</div></pre></td></tr></table></figure>
+<p>这三个带有 <code>Access-Control</code> 开头的字段分别表示：</p>
+<p>1.Access-Control-Allow-Origin<br>必须。它的值是请求时Origin字段的值或者 *，表示接受任意域名的请求。</p>
+<p>2.Access-Control-Allow-Credentials；<br>可选。它的值是一个布尔值，表示是否允许发送 <code>Cookie</code> 。默认情况下， <code>Cookie</code> 不包括在 <code>CORS</code> 请求之中。设为 <code>true</code> ，即表示服务器明确许可，<code>Cookie</code> 可以包含在请求中，一起发给服务器。<br>再需要发送 <code>cookie</code> 的时候还需要注意要在 <code>AJAX</code> 请求中打开 <code>withCredentials</code> 属性： <code>var xhr = new XMLHttpRequest(); xhr.withCredentials = true;</code><br>需要注意的是，如果要发送 <code>Cookie</code> ， <code>Access-Control-Allow-Origin</code> 就不能设为 <code>*</code> ，必须指定明确的、与请求网页一致的域名。同时， <code>Cookie</code> 依然遵循同源政策，只有用服务器域名设置的 <code>Cookie</code> 才会上传，其他域名的 <code>Cookie</code> 并不会上传，且原网页代码中的 <code>document.cookie</code> 也无法读取服务器域名下的 <code>Cookie</code> 。</p>
+<p>3.Access-Control-Expose-Headers<br>可选。 <code>CORS</code> 请求时， <code>XMLHttpRequest</code> 对象的 <code>getResponseHeader()</code> 方法只能拿到6个基本字段： <code>Cache-Control</code> 、 <code>Content-Language</code> 、 <code>Content-Type</code> 、 <code>Expires</code> 、 <code>Last-Modified</code> 、 <code>Pragma</code> 。如果想拿到其他字段，就必须在 <code>Access-Control-Expose-Headers</code> 里面指定。上面的例子指定， <code>getResponseHeader(&#39;Info&#39;)</code> 可以返回Info字段的值。</p>
+<h3 id="2-服务端拒绝"><a href="#2-服务端拒绝" class="headerlink" title="2.服务端拒绝"></a>2.服务端拒绝</h3><p>当然我们为了防止接口被乱调用，需要限制源，对于不允许的源，服务端还是会返回一个正常的HTTP回应，但是不会带上 <code>Access-Control-Allow-Origin</code> 字段，浏览器发现这个跨域请求的返回头信息没有该字段，就会抛出一个错误，会被 <code>XMLHttpRequest</code> 的 <code>onerror</code> 回调捕获到。<br><strong>这种错误无法通过 <code>HTTP</code> 状态码判断，因为回应的状态码有可能是 `200</strong>`</p>
+<h2 id="非简单请求"><a href="#非简单请求" class="headerlink" title="非简单请求"></a>非简单请求</h2><h2 id="条件-1"><a href="#条件-1" class="headerlink" title="条件"></a>条件</h2><p>出了简单请求以外的 <code>CORS</code> 请求。<br>非简单请求是那种对服务器有特殊要求的请求，比如请求方法是PUT或DELETE，或者Content-Type字段的类型是application/json。</p>
+<h2 id="过程-1"><a href="#过程-1" class="headerlink" title="过程"></a>过程</h2><p>1）预检请求</p>
+<p>非简单请求的 <code>CORS</code> 请求，会在正式通信之前，增加一次 <code>HTTP</code> 查询请求，称为”预检”请求（preflight）。<br>浏览器先询问服务器，当前网页所在的域名是否在服务器的许可名单之中，以及可以使用哪些 <code>HTTP</code> 动词和头信息字段。只有得到肯定答复，浏览器才会发出正式的 <code>XMLHttpRequest</code> 请求，否则就报错。<br>预检请求的发送请求：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">OPTIONS /cors HTTP/1.1</div><div class="line">Origin: https://api.qiutc.me</div><div class="line">Access-Control-Request-Method: PUT</div><div class="line">Access-Control-Request-Headers: X-Custom-Header</div><div class="line">Host: api.qiutc.com</div><div class="line">Accept-Language: en-US</div><div class="line">Connection: keep-alive</div><div class="line">User-Agent: Mozilla/5.0...</div></pre></td></tr></table></figure>
+<p>“预检”请求用的请求方法是 <code>OPTIONS</code> ，表示这个请求是用来询问的。头信息里面，关键字段是 <code>Origin</code> ，表示请求来自哪个源。<br>除了 <code>Origin</code> 字段，”预检”请求的头信息包括两个特殊字段。</p>
+<p>1.Access-Control-Request-Method<br>该字段是必须的，用来列出浏览器的 <code>CORS</code> 请求会用到哪些 <code>HTTP</code> 方法，上例是 <code>PUT</code> 。</p>
+<p>2.Access-Control-Request-Headers<br>该字段是一个逗号分隔的字符串，指定浏览器 <code>CORS</code> 请求会额外发送的头信息字段，上例是 <code>X-Custom-Header</code> 。<br>预检请求的返回：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">HTTP/1.1 200 OK</div><div class="line">Date: Mon, 01 Dec 2008 01:15:39 GMT</div><div class="line">Server: Apache/2.0.61 (Unix)</div><div class="line">Access-Control-Allow-Origin: https://api.qiutc.me</div><div class="line">Access-Control-Allow-Methods: GET, POST, PUT</div><div class="line">Access-Control-Allow-Headers: X-Custom-Header</div><div class="line">Content-Type: text/html; charset=utf-8</div><div class="line">Content-Encoding: gzip</div><div class="line">Content-Length: 0</div><div class="line">Keep-Alive: timeout=2, max=100</div><div class="line">Connection: Keep-Alive</div><div class="line">Content-Type: text/plain</div></pre></td></tr></table></figure>
+<p>3.Access-Control-Allow-Methods<br>必需，它的值是逗号分隔的一个字符串，表明服务器支持的所有跨域请求的方法。注意，返回的是所有支持的方法，而不单是浏览器请求的那个方法。这是为了避免多次”预检”请求。</p>
+<p>4.Access-Control-Allow-Headers<br>如果浏览器请求包括 <code>Access-Control-Request-Headers</code> 字段，则 <code>Access-Control-Allow-Headers</code> 字段是必需的。它也是一个逗号分隔的字符串，表明服务器支持的所有头信息字段，不限于浏览器在”预检”中请求的字段。</p>
+<p>5.Access-Control-Max-Age<br>该字段可选，用来指定本次预检请求的有效期，单位为秒。上面结果中，有效期是20天（1728000秒），即允许缓存该条回应1728000秒（即20天），在此期间，不用发出另一条预检请求。</p>
+<p>2）浏览器的正常请求和回应</p>
+<p>一旦服务器通过了”预检”请求，以后每次浏览器正常的 <code>CORS</code> 请求，就都跟简单请求一样，会有一个 <code>Origin</code> 头信息字段。服务器的回应，也都会有一个 <code>Access-Control-Allow-Origin</code> 头信息字段。</p>
+<p>参考：<a href="http://www.ruanyifeng.com/blog/2016/04/cors.html" target="_blank" rel="external">《跨域资源共享 CORS 详解》</a></p>
+<h1 id="jsonp"><a href="#jsonp" class="headerlink" title="jsonp"></a>jsonp</h1><p>jsonp = json + padding<br>其实对于常用性来说，jsonp应该是使用最经常的一种跨域方式了，他不受浏览器兼容性的限制。但是他也有他的局限性，只能发送 GET 请求，需要服务端和前端规定好，写法丑陋。<br>它的原理在于浏览器请求 script 资源不受同源策略限制，并且请求到 script 资源后立即执行。<br>主要做法是这样的：</p>
+<p>1.在浏览器端：<br>  首先全局注册一个callback回调函数，记住这个函数名字（比如：resolveJson），这个函数接受一个参数，参数是期望的到的服务端返回数据，函数的具体内容是处理这个数据。<br>  然后动态生成一个 script 标签，src 为：请求资源的地址＋获取函数的字段名＋回调函数名称，这里的获取函数的字段名是要和服务端约定好的，是为了让服务端拿到回调函数名称。（如：www.qiute.com?callbackName=resolveJson）。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">function resolveJosn(result) &#123;</div><div class="line">	console.log(result.name);</div><div class="line">&#125;</div><div class="line">var jsonpScript= document.createElement(&quot;script&quot;);</div><div class="line">jsonpScript.type = &quot;text/javascript&quot;;</div><div class="line">jsonpScript.src = &quot;https://www.qiute.com?callbackName=resolveJson&quot;;</div><div class="line">document.getElementsByTagName(&quot;head&quot;)[0].appendChild(jsonpScript);</div></pre></td></tr></table></figure>
+<p>2.服务端<br>  在接受到浏览器端 script 的请求之后，从url的query的callbackName获取到回调函数的名字，例子中是resolveJson。<br>  然后动态生成一段javascript片段去给这个函数传入参数执行这个函数。比如：</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">resolveJson(&#123;name: <span class="string">'qiutc'</span>&#125;);</div></pre></td></tr></table></figure>
+<p>3.执行<br>  服务端返回这个 script 之后，浏览器端获取到 script 资源，然后会立即执行这个 javascript，也就是上面那个片段。这样就能根据之前写好的回调函数处理这些数据了。</p>
+<p>在一些第三方库往往都会封装jsonp的操作，比如 jQuery 的$.getJSON。</p>
+<h1 id="document-domain"><a href="#document-domain" class="headerlink" title="document.domain"></a>document.domain</h1><p>一个页面框架（iframe／frame）之间（父子或同辈），是能够获取到彼此的window对象的，但是这个 window 不能拿到方法和属性。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">// 当前页面域名 https://blog.qiutc.me/a.html</div><div class="line">&lt;script&gt;</div><div class="line">function onLoad() &#123;</div><div class="line">	var iframe =document.getElementById(&apos;iframe&apos;);</div><div class="line">	var iframeWindow = iframe.contentWindow; // 这里可以获取 iframe 里面 window 对象，但是几乎没用</div><div class="line">	var doc = iframeWindow.document; // 获取不到</div><div class="line">&#125;</div><div class="line">&lt;/script&gt;</div><div class="line">&lt;iframe src=&quot;https://www.qiutc.me/b.html&quot; onload=&quot;onLoad()&quot;&lt;/iframe&gt;</div></pre></td></tr></table></figure>
+<p>这个时候，<code>document.domain</code> 就可以派上用场了，我们只要把 <code>https://blog.qiutc.me/a.html</code> 和 <code>https://www.qiutc.me/b.html</code> 这两个页面的 document.domain 都设成相同的域名就可以了。<br>前提条件：这两个域名必须属于同一个基础域名!而且所用的协议，端口都要一致。<br>但要注意的是，<code>document.domain</code> 的设置是有限制的，我们只能把 <code>document.domain</code> 设置成自身或更高一级的父域，且主域必须相同。例如：<code>a.b.example.com</code> 中某个文档的 <code>document.domain</code> 可以设成 <code>a.b.example.com</code>、<code>b.example.com</code>、<code>example.com</code> 中的任意一个，但是不可以设成 <code>c.a.b.example.com</code>,因为这是当前域的子域，也不可以设成<code>baidu.com</code>,因为主域已经不相同了。<br>这样我们就可以通过js访问到iframe中的各种属性和对象了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">// 主页面：https://blog.qiutc.me/a.html</div><div class="line">&lt;script&gt;</div><div class="line">document.domain = &apos;qiutc.me&apos;;</div><div class="line">function onLoad() &#123;</div><div class="line">	var iframe =document.getElementById(&apos;iframe&apos;);</div><div class="line">	var iframeWindow = iframe.contentWindow; // 这里可以获取 iframe 里面 window 对象并且能得到方法和属性</div><div class="line">	var doc = iframeWindow.document; // 获取到</div><div class="line">&#125;</div><div class="line">&lt;/script&gt;</div><div class="line">&lt;iframe src=&quot;https://www.qiutc.me/b.html&quot; onload=&quot;onLoad()&quot;&lt;/iframe&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// iframe 里面的页面</div><div class="line">&lt;script&gt;</div><div class="line">document.domain = &apos;qiutc.me&apos;;</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure>
+<h1 id="window-name"><a href="#window-name" class="headerlink" title="window.name"></a>window.name</h1><p>window对象有个name属性，该属性有个特征：即在一个窗口(window)的生命周期内,窗口载入的所有的页面都是共享一个 <code>window.name</code> 的，每个页面对 <code>window.name</code> 都有读写的权限，<code>window.name</code> 是持久存在一个窗口载入过的所有页面中的，并不会因新页面的载入而进行重置。<br>比如有一个 <code>www.qiutc.me/a.html</code> 页面，需要通过 <code>a.html</code> 页面里的js来获取另一个位于不同域上的页面 <code>www.qiutc.com/data.html</code> 里的数据。<br><code>data.html</code> 页面里的代码很简单，就是给当前的 <code>window.name</code> 设置一个 <code>a.html</code> 页面想要得到的数据值。<code>data.html</code> 里的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;script&gt;</div><div class="line">window.name = &apos;我是被期望得到的数据&apos;;</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure>
+<p>那么在 <code>a.html</code> 页面中，我们怎么把 <code>data.html</code> 页面载入进来呢？显然我们不能直接在 <code>a.html</code> 页面中通过改变 <code>window.location</code> 来载入 <code>data.html</code> 页面,因为我们想要即使 <code>a.html</code> 页面不跳转也能得到 <code>data.html</code> 里的数据。<br>答案就是在 <code>a.html</code> 页面中使用一个隐藏的 <code>iframe</code> 来充当一个中间人角色，由 <code>iframe</code> 去获取 <code>data.html</code> 的数据，然后 <code>a.html</code> 再去得到 <code>iframe</code> 获取到的数据。<br>充当中间人的 <code>iframe</code> 想要获取到 <code>data.html</code> 的通过 <code>window.name</code> 设置的数据，只需要把这个 <code>iframe</code> 的src设为 <code>www.qiutc.com/data.html</code> 就行了。然后 <code>a.html</code> 想要得到 <code>iframe</code> 所获取到的数据，也就是想要得到 <code>iframe</code> 的 <code>window.name</code> 的值，还必须把这个 <code>iframe</code> 的src设成跟 <code>a.html</code> 页面同一个域才行，不然根据前面讲的同源策略， <code>a.html</code> 是不能访问到 <code>iframe</code> 里的 <code>window.name</code> 属性的。这就是整个跨域过程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">// a.html</div><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html lang=&quot;en&quot;&gt;</div><div class="line">&lt;head&gt;</div><div class="line">  &lt;meta charset=&quot;UTF-8&quot;&gt;</div><div class="line">  &lt;title&gt;Document&lt;/title&gt;</div><div class="line">  &lt;script&gt;</div><div class="line">	function getData() &#123;</div><div class="line">		var iframe =document.getElementById(&apos;iframe&apos;);</div><div class="line">		iframe.onload = function() &#123;</div><div class="line">			var data = iframe.contentWindow.name; // 得到</div><div class="line">		&#125;</div><div class="line">		iframe.src = &apos;b.html&apos;;  // 这里b和a同源</div><div class="line">	&#125;</div><div class="line">  &lt;/script&gt;</div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">  &lt;iframe src=&quot;https://www.qiutc.com/data.html&quot; style=&quot;display:none&quot; onload=&quot;getData()&quot;&lt;/iframe&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure>
+<h1 id="window-postMessage"><a href="#window-postMessage" class="headerlink" title="window.postMessage"></a>window.postMessage</h1><p><code>window.postMessage(message, targetOrigin)</code> 方法是 <code>html5</code> 新引进的特性，可以使用它来向其它的 <code>window</code> 对象发送消息，无论这个 <code>window</code> 对象是属于同源或不同源。兼容性：</p>
+<p><img src="/images/section-cross-domain-postmessage.png"></p>
+<p><a href="http://caniuse.com/#search=postMessage" target="_blank" rel="external">http://caniuse.com/#search=postMessage</a></p>
+<p>调用 <code>postMessage</code> 方法的 <code>window</code> 对象是指要接收消息的那一个 <code>window</code> 对象，该方法的第一个参数 <code>message</code> 为要发送的消息，类型只能为字符串；第二个参数 <code>targetOrigin</code> 用来限定接收消息的那个 <code>window</code> 对象所在的域，如果不想限定域，可以使用通配符 * 。<br>需要接收消息的 <code>window</code> 对象，可是通过监听自身的 <code>message</code> 事件来获取传过来的消息，消息内容储存在该事件对象的data属性中。<br>上面所说的向其他 <code>window</code> 对象发送消息，其实就是指一个页面有几个框架的那种情况，因为每一个框架都有一个 <code>window</code> 对象。在讨论第种方法的时候，我们说过，不同域的框架间是可以获取到对方的 <code>window</code> 对象的，虽然没什么用，但是有一个方法是可用的－ <code>window.postMessage</code> 。下面看一个简单的示例，有两个页面：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">// 主页面  blog.qiutc.com</div><div class="line">&lt;script&gt;</div><div class="line">function onLoad() &#123;</div><div class="line">	var iframe =document.getElementById(&apos;iframe&apos;);</div><div class="line">	var iframeWindow = iframe.contentWindow;</div><div class="line">	iframeWindow.postMessage(&quot;I&apos;m message from main page.&quot;);</div><div class="line">&#125;</div><div class="line">&lt;/script&gt;</div><div class="line">&lt;iframe src=&quot;https://www.qiutc.me/b.html&quot; onload=&quot;onLoad()&quot;&lt;/iframe&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// b 页面</div><div class="line">&lt;script&gt;</div><div class="line">window.onmessage = function(e) &#123;</div><div class="line">	e = e || event;</div><div class="line">	console.log(e.data);</div><div class="line">&#125;</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure>
+<h1 id="CSST-CSS-Text-Transformation"><a href="#CSST-CSS-Text-Transformation" class="headerlink" title="CSST (CSS Text Transformation)"></a>CSST (CSS Text Transformation)</h1><blockquote>
+<p>一种用 <code>CSS</code> 跨域传输文本的方案。<br>优点：相比 <code>JSONP</code> 更为安全，不需要执行跨站脚本。<br>缺点：没有 <code>JSONP</code> 适配广，<code>CSST</code> 依赖支持 <code>CSS3</code> 的浏览器。<br>原理：通过读取 <code>CSS3</code> <code>content</code> 属性获取传送内容。<br>具体可以参考：<a href="https://github.com/zswang/csst" target="_blank" rel="external">CSST (CSS Text Transformation)</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/跨域/" rel="tag"># 跨域</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/26/jquery-20170626ajax-post-get参数详解/" rel="next" title="$.ajax,$.post,$.get参数详解">
+                <i class="fa fa-chevron-left"></i> $.ajax,$.post,$.get参数详解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/29/angularjs-20170629Angular-directive-各属性详解/" rel="prev" title="Angular directive 各属性详解">
+                Angular directive 各属性详解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpeg"
+               alt="Shinn" />
+          <p class="site-author-name" itemprop="name">Shinn</p>
+           
+              <p class="site-description motion-element" itemprop="description">你总是这样轻言放弃的话，无论过多久都只会原地踏步。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/SYJUN" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#跨域资源共享-CORS"><span class="nav-number">1.</span> <span class="nav-text">跨域资源共享 CORS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#两种请求"><span class="nav-number">1.1.</span> <span class="nav-text">两种请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单请求（simple-request）"><span class="nav-number">1.2.</span> <span class="nav-text">简单请求（simple request）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件"><span class="nav-number">1.3.</span> <span class="nav-text">条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过程"><span class="nav-number">1.4.</span> <span class="nav-text">过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-服务端允许"><span class="nav-number">1.4.1.</span> <span class="nav-text">1.服务端允许</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-服务端拒绝"><span class="nav-number">1.4.2.</span> <span class="nav-text">2.服务端拒绝</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非简单请求"><span class="nav-number">1.5.</span> <span class="nav-text">非简单请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件-1"><span class="nav-number">1.6.</span> <span class="nav-text">条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过程-1"><span class="nav-number">1.7.</span> <span class="nav-text">过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#jsonp"><span class="nav-number">2.</span> <span class="nav-text">jsonp</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#document-domain"><span class="nav-number">3.</span> <span class="nav-text">document.domain</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#window-name"><span class="nav-number">4.</span> <span class="nav-text">window.name</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#window-postMessage"><span class="nav-number">5.</span> <span class="nav-text">window.postMessage</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CSST-CSS-Text-Transformation"><span class="nav-number">6.</span> <span class="nav-text">CSST (CSS Text Transformation)</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shinn</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

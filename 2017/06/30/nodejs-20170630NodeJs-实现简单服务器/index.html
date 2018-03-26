@@ -1,0 +1,1116 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="NodeJs,server," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/uploads/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="实现模拟一个可交互的简单服务器使用 NodeJS 来实现一个简单的服务器, 模拟一个接口,前端进行数据交互后,会再服务器本地新建一个 json 格式的文件用来存储 data.">
+<meta name="keywords" content="NodeJs,server">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NodeJs 实现简单服务器">
+<meta property="og:url" content="https://syjun.github.io/2017/06/30/nodejs-20170630NodeJs-实现简单服务器/index.html">
+<meta property="og:site_name" content="灰色の幽默">
+<meta property="og:description" content="实现模拟一个可交互的简单服务器使用 NodeJS 来实现一个简单的服务器, 模拟一个接口,前端进行数据交互后,会再服务器本地新建一个 json 格式的文件用来存储 data.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-12-13T02:41:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NodeJs 实现简单服务器">
+<meta name="twitter:description" content="实现模拟一个可交互的简单服务器使用 NodeJS 来实现一个简单的服务器, 模拟一个接口,前端进行数据交互后,会再服务器本地新建一个 json 格式的文件用来存储 data.">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://syjun.github.io/2017/06/30/nodejs-20170630NodeJs-实现简单服务器/"/>
+
+
+
+
+
+  <title>NodeJs 实现简单服务器 | 灰色の幽默</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b8197adc4b3f693d9f3c14c792e39266";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">灰色の幽默</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">路漫漫其修远兮,吾将上下而求索</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://syjun.github.io/2017/06/30/nodejs-20170630NodeJs-实现简单服务器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shinn">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="灰色の幽默">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">NodeJs 实现简单服务器</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-30T13:32:27+08:00">
+                2017-06-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NodeJs/" itemprop="url" rel="index">
+                    <span itemprop="name">NodeJs</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="实现模拟一个可交互的简单服务器"><a href="#实现模拟一个可交互的简单服务器" class="headerlink" title="实现模拟一个可交互的简单服务器"></a>实现模拟一个可交互的简单服务器</h2><p>使用 <code>NodeJS</code> 来实现一个简单的服务器, 模拟一个接口,前端进行数据交互后,会再服务器本地新建一个 <code>json</code> 格式的文件用来存储 <code>data</code>.</p>
+<a id="more"></a>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>);</div><div class="line"><span class="keyword">var</span> bodyParser = <span class="built_in">require</span>(<span class="string">'body-parser'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</div><div class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> app = express();</div><div class="line"></div><div class="line"><span class="keyword">var</span> COMMENTS_FILE = path.join(__dirname,<span class="string">'dataFile/comments.json'</span>);</div><div class="line"></div><div class="line">app.set(<span class="string">'port'</span>,(process.env.PORT || <span class="number">8000</span>));</div><div class="line"></div><div class="line">app.use(<span class="string">'/'</span>, express.static(path.join(__dirname, <span class="string">'dist'</span>)));</div><div class="line">app.use(bodyParser.json());</div><div class="line">app.use(bodyParser.urlencoded(&#123;<span class="attr">extended</span>: <span class="literal">true</span>&#125;));</div><div class="line"></div><div class="line">app.use(<span class="function"><span class="keyword">function</span>(<span class="params">req,res,next</span>)</span>&#123;</div><div class="line">    res.setHeader(<span class="string">'Access-Control-Allow-Origin'</span>,<span class="string">'*'</span>);</div><div class="line"></div><div class="line">    res.setHeader(<span class="string">'Cache-Control'</span>,<span class="string">'no-cache'</span>);</div><div class="line">    next();</div><div class="line">&#125;);</div><div class="line"></div><div class="line">app.get(<span class="string">'/data/comments'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</div><div class="line">  fs.readFile(COMMENTS_FILE, <span class="function"><span class="keyword">function</span>(<span class="params">err, data</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (err) &#123;</div><div class="line">      <span class="built_in">console</span>.error(err);</div><div class="line">      process.exit(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    res.json(<span class="built_in">JSON</span>.parse(data));</div><div class="line">  &#125;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line"></div><div class="line">app.post(<span class="string">'/data/comments'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</div><div class="line">  fs.readFile(COMMENTS_FILE, <span class="function"><span class="keyword">function</span>(<span class="params">err, data</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (err) &#123;</div><div class="line">      <span class="built_in">console</span>.error(err);</div><div class="line">      process.exit(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">var</span> comments = <span class="built_in">JSON</span>.parse(data);</div><div class="line"></div><div class="line">    <span class="keyword">var</span> newComment = &#123;</div><div class="line">      id: <span class="built_in">Date</span>.now(),</div><div class="line">      author: req.body.author,</div><div class="line">      text: req.body.text,</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    comments.push(newComment);</div><div class="line">    fs.writeFile(COMMENTS_FILE, <span class="built_in">JSON</span>.stringify(comments, <span class="literal">null</span>, <span class="number">4</span>), <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</div><div class="line">      <span class="keyword">if</span> (err) &#123;</div><div class="line">        <span class="built_in">console</span>.error(err);</div><div class="line">        process.exit(<span class="number">1</span>);</div><div class="line">      &#125;</div><div class="line">      res.json(comments);</div><div class="line">    &#125;);</div><div class="line">  &#125;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">app.listen(app.get(<span class="string">'port'</span>),<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'Server started: http:127.0.0.1:'</span> + app.get(<span class="string">'port'</span>) + <span class="string">''</span>);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h2 id="实现访问本地静态资源文件的简单服务器"><a href="#实现访问本地静态资源文件的简单服务器" class="headerlink" title="实现访问本地静态资源文件的简单服务器"></a>实现访问本地静态资源文件的简单服务器</h2><p>新建一个名称为 server 的文件夹,里面放置服务器端的文件。然后在这个文件夹中新建 <code>server.js</code> 文件,代码如下:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = (<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line"><span class="meta">    "use strict"</span>;</div><div class="line"></div><div class="line">    <span class="built_in">console</span>.time(<span class="string">"[HttpServer][Start]"</span>);</div><div class="line"></div><div class="line">    <span class="comment">// http 协议模块</span></div><div class="line">    <span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);</div><div class="line">    <span class="comment">// url 解析模块</span></div><div class="line">    <span class="keyword">var</span> url = <span class="built_in">require</span>(<span class="string">'url'</span>);</div><div class="line">    <span class="comment">// 文件系统模块</span></div><div class="line">    <span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</div><div class="line">    <span class="comment">// 路径解析模块</span></div><div class="line">    <span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</div><div class="line"></div><div class="line">    <span class="comment">// 服务器js 上一层目录</span></div><div class="line">    <span class="keyword">var</span> dirname = path.dirname(__dirname);</div><div class="line"></div><div class="line">    <span class="keyword">var</span> httpSrc = <span class="string">''</span>;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        <span class="comment">// 启动服务</span></div><div class="line">        start: <span class="function"><span class="keyword">function</span> (<span class="params"> src </span>) </span>&#123;</div><div class="line">            src &amp;&amp; (httpSrc = path.join(dirname, src));</div><div class="line">            <span class="keyword">var</span> port = <span class="keyword">this</span>.config.port;</div><div class="line">            <span class="keyword">var</span> ip = <span class="keyword">this</span>.config.ip;</div><div class="line"></div><div class="line">            <span class="comment">// 创建一个服务</span></div><div class="line">            <span class="keyword">var</span> httpServer = http.createServer(<span class="keyword">this</span>.processRequest.bind(<span class="keyword">this</span>));</div><div class="line"></div><div class="line">            <span class="comment">// 在指定的端口监听服务</span></div><div class="line">            httpServer.listen(port, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">                <span class="built_in">console</span>.log(<span class="string">"[HttpServer][Start]"</span>, <span class="string">"runing at http://"</span> + ip + <span class="string">":"</span> + port + <span class="string">"/"</span>);</div><div class="line">                <span class="built_in">console</span>.timeEnd(<span class="string">"[HttpServer][Start]"</span>);</div><div class="line">            &#125;);</div><div class="line"></div><div class="line">            httpServer.on(<span class="string">"error"</span>, <span class="function"><span class="keyword">function</span> (<span class="params"> error </span>) </span>&#123;</div><div class="line">                <span class="built_in">console</span>.error(error);</div><div class="line">            &#125;);</div><div class="line">        &#125;,</div><div class="line"></div><div class="line">        processRequest: <span class="function"><span class="keyword">function</span> (<span class="params"> request, response </span>) </span>&#123;</div><div class="line">            <span class="keyword">var</span> hasExt = <span class="literal">true</span>;</div><div class="line">            <span class="keyword">var</span> requestUrl = request.url;</div><div class="line">            <span class="keyword">var</span> pathName = url.parse(requestUrl).pathname;</div><div class="line"></div><div class="line">            <span class="comment">// 对请求的路径进行解码，防止中文乱码</span></div><div class="line">            pathName = <span class="built_in">decodeURI</span>(pathName);</div><div class="line"></div><div class="line">            <span class="comment">//如果路径中没有扩展名</span></div><div class="line">            <span class="keyword">if</span> (path.extname(pathName) === <span class="string">''</span>) &#123;</div><div class="line">                <span class="comment">// 如果不是以 / 结尾的， 加 / 并作301重定向</span></div><div class="line">                <span class="keyword">if</span> (pathName.charAt(pathName.length - <span class="number">1</span>) != <span class="string">'/'</span>) &#123;</div><div class="line">                    pathName += <span class="string">'/'</span>;</div><div class="line">                    <span class="keyword">var</span> redirect = <span class="string">'http://'</span> + request.headers.host + pathName;</div><div class="line">                    response.writeHead(<span class="number">301</span>, &#123; <span class="attr">location</span>: redirect &#125;);</div><div class="line"></div><div class="line">                    response.end();</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                <span class="comment">// 添加默认的访问页面，但这个页面不一定存在，后面会处理</span></div><div class="line">                pathName += <span class="string">'index.html'</span>;</div><div class="line">                hasExt = <span class="literal">false</span>; <span class="comment">// 标记默认页面是程序自动添加的</span></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="comment">// 获取资源文件的相对路径  'http/webroot'</span></div><div class="line">            <span class="keyword">var</span> filePath = path.join(httpSrc || __dirname, pathName);</div><div class="line"></div><div class="line">            <span class="comment">// 获取对应文件的文档类型</span></div><div class="line">            <span class="keyword">var</span> contentType = <span class="keyword">this</span>.getContentType(filePath);</div><div class="line"></div><div class="line">            <span class="comment">// 如果文件名存在</span></div><div class="line">            fs.exists(filePath, <span class="function"><span class="keyword">function</span> (<span class="params"> exists </span>) </span>&#123;</div><div class="line">                <span class="keyword">if</span> (exists) &#123;</div><div class="line">                    response.writeHead(<span class="number">200</span>, &#123; <span class="string">"content-type"</span>: contentType &#125;);</div><div class="line">                    <span class="keyword">var</span> stream = fs.createReadStream(filePath, &#123; </div><div class="line">                    	flags: <span class="string">"r"</span>, </div><div class="line">                    	encoding: <span class="literal">null</span>, </div><div class="line">                    &#125;);</div><div class="line">                    stream.on(<span class="string">"error"</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">                        response.writeHead(<span class="number">500</span>, &#123; <span class="string">"content-type"</span>: <span class="string">"text/html"</span> &#125;);</div><div class="line">                        response.end(<span class="string">"&lt;h1&gt;500 Server Error&lt;/h1&gt;"</span>);</div><div class="line">                    &#125;);</div><div class="line"></div><div class="line">                    <span class="comment">// 返回文件内容</span></div><div class="line">                    stream.pipe(response);</div><div class="line">                &#125; <span class="keyword">else</span> &#123; <span class="comment">// 文件名不存在的情况</span></div><div class="line">                    <span class="keyword">if</span> (hasExt) &#123;</div><div class="line">                        <span class="comment">// 如果这个文件不是程序自动添加的，直接返回404</span></div><div class="line">                        response.writeHead(<span class="number">404</span>, &#123; <span class="string">"content-type"</span>: <span class="string">"text/html"</span> &#125;);</div><div class="line">                        response.end(<span class="string">"&lt;h1&gt;404 Not Found&lt;/h1&gt;"</span>);</div><div class="line">                    &#125; <span class="keyword">else</span> &#123;</div><div class="line">                        <span class="comment">// 如果文件是程序自动添加的且不存在，则表示用户希望访问的是该目录下的文件列表</span></div><div class="line">                        <span class="keyword">var</span> html = <span class="string">'&lt;head&gt;&lt;meta charset="urf-8"&gt;&lt;/head&gt;'</span>;</div><div class="line"></div><div class="line">                        <span class="keyword">try</span> &#123;</div><div class="line">                            <span class="comment">// 用户访问目录</span></div><div class="line">                            <span class="keyword">var</span> filedir = filePath.substring(<span class="number">0</span>, filePath.lastIndexOf(<span class="string">'\\'</span>));</div><div class="line">                            <span class="comment">// 获取用户访问路径下的文件列表</span></div><div class="line">                            <span class="keyword">var</span> files = fs.readdirSync(filedir);</div><div class="line">                            <span class="comment">// 将访问路径下的所有文件一一列举出来，并添加超链接，以便用户进一步访问</span></div><div class="line">                            <span class="keyword">for</span> (<span class="keyword">var</span> i <span class="keyword">in</span> files) &#123;</div><div class="line">                                <span class="keyword">var</span> filename = files[i];</div><div class="line">                                html += <span class="string">'&lt;div&gt;&lt;a href="'</span> + filename + <span class="string">'"&gt;'</span> + filename + <span class="string">'&lt;/a&gt;&lt;/div&gt;'</span>;</div><div class="line">                            &#125;</div><div class="line">                        &#125; <span class="keyword">catch</span> (e) &#123;</div><div class="line">                            <span class="built_in">console</span>.log(<span class="string">'server running url is '</span> + filePath);</div><div class="line">                            html += <span class="string">'&lt;h1&gt;您访问的目录不存在&lt;/h1&gt;'</span>;</div><div class="line">                        &#125;</div><div class="line"></div><div class="line">                        response.writeHead(<span class="number">200</span>, &#123; <span class="string">"content-type"</span>: <span class="string">"text/html"</span> &#125;);</div><div class="line">                        response.end(html);</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125;,</div><div class="line"></div><div class="line">        getContentType: <span class="function"><span class="keyword">function</span> (<span class="params"> filePath </span>) </span>&#123;</div><div class="line">            <span class="keyword">var</span> contentType = <span class="keyword">this</span>.config.mime;</div><div class="line">            <span class="keyword">var</span> ext = path.extname(filePath).substr(<span class="number">1</span>);</div><div class="line">            <span class="keyword">if</span> (contentType.hasOwnProperty(ext)) &#123;</div><div class="line">                <span class="keyword">return</span> contentType[ext];</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">return</span> contentType.default;</div><div class="line">            &#125;</div><div class="line">        &#125;,</div><div class="line"></div><div class="line">        config: &#123;</div><div class="line">            port: <span class="number">1993</span>,</div><div class="line">            ip: <span class="string">'127.0.0.1'</span>,</div><div class="line">            mime: &#123;</div><div class="line">                <span class="string">"css"</span>: <span class="string">"text/css"</span>,</div><div class="line">                <span class="string">"gif"</span>: <span class="string">"image/gif"</span>,</div><div class="line">                <span class="string">"html"</span>: <span class="string">"text/html"</span>,</div><div class="line">                <span class="string">"ico"</span>: <span class="string">"image/x-icon"</span>,</div><div class="line">                <span class="string">"jpeg"</span>: <span class="string">"image/jpeg"</span>,</div><div class="line">                <span class="string">"jpg"</span>: <span class="string">"image/jpeg"</span>,</div><div class="line">                <span class="string">"js"</span>: <span class="string">"text/javascript"</span>,</div><div class="line">                <span class="string">"json"</span>: <span class="string">"application/json"</span>,</div><div class="line">                <span class="string">"pdf"</span>: <span class="string">"application/pdf"</span>,</div><div class="line">                <span class="string">"png"</span>: <span class="string">"image/png"</span>,</div><div class="line">                <span class="string">"svg"</span>: <span class="string">"image/svg+xml"</span>,</div><div class="line">                <span class="string">"swf"</span>: <span class="string">"application/x-shockwave-flash"</span>,</div><div class="line">                <span class="string">"tiff"</span>: <span class="string">"image/tiff"</span>,</div><div class="line">                <span class="string">"txt"</span>: <span class="string">"text/plain"</span>,</div><div class="line">                <span class="string">"wav"</span>: <span class="string">"audio/x-wav"</span>,</div><div class="line">                <span class="string">"wma"</span>: <span class="string">"audio/x-ms-wma"</span>,</div><div class="line">                <span class="string">"wmv"</span>: <span class="string">"video/x-ms-wmv"</span>,</div><div class="line">                <span class="string">"xml"</span>: <span class="string">"text/xml"</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;)();</div></pre></td></tr></table></figure>
+<p>然后再在这个文件夹中新建一个 <code>start.js</code> 文件, 代码如下:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">require</span>(<span class="string">'./server.js'</span>).start(<span class="string">'./src'</span>);</div></pre></td></tr></table></figure>
+<p>上面的 <code>require(&#39;./server.js&#39;)</code> 则是上面新建的服务器文件, <code>start()</code> 方法则是启动服务的函数,里面的 ‘./src’ 则是项目根目录下的 ‘src’ 目录,该目录用来存放项目的所有文件,比如 <code>html</code> 、 <code>css</code> 、 <code>js</code> 和图片等文件。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/NodeJs/" rel="tag"># NodeJs</a>
+          
+            <a href="/tags/server/" rel="tag"># server</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/29/angularjs-20170629Angular-directive-各属性详解/" rel="next" title="Angular directive 各属性详解">
+                <i class="fa fa-chevron-left"></i> Angular directive 各属性详解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/13/jquery-20170713ajax-的data参数类型/" rel="prev" title="$.ajax() 的 data 参数类型">
+                $.ajax() 的 data 参数类型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpeg"
+               alt="Shinn" />
+          <p class="site-author-name" itemprop="name">Shinn</p>
+           
+              <p class="site-description motion-element" itemprop="description">你总是这样轻言放弃的话，无论过多久都只会原地踏步。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/SYJUN" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现模拟一个可交互的简单服务器"><span class="nav-number">1.</span> <span class="nav-text">实现模拟一个可交互的简单服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现访问本地静态资源文件的简单服务器"><span class="nav-number">2.</span> <span class="nav-text">实现访问本地静态资源文件的简单服务器</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shinn</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

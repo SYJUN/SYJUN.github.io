@@ -1,0 +1,1191 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Angular,directive," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/uploads/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="这一篇从自定义指令出发，记录了定义一个指令时影响指令行为的各种因素。试着感受这些因素，让自己更高效地编写AngularJS应用。  Directive  先从定义一个简单的指令开始。 定义一个指令本质上是在HTML中通过元素、属性、类或注释来添加功能。AngularJS 的内置指令都是以 ng 开头，如果想自定义指令，建议自定义一个前缀代表自己的命名空间。这里我们先使用 my 作为前缀:">
+<meta name="keywords" content="Angular,directive">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AngularJS-自定义指令">
+<meta property="og:url" content="https://syjun.github.io/2017/08/08/angularjs-20170808AngularJS-自定义指令/index.html">
+<meta property="og:site_name" content="灰色の幽默">
+<meta property="og:description" content="这一篇从自定义指令出发，记录了定义一个指令时影响指令行为的各种因素。试着感受这些因素，让自己更高效地编写AngularJS应用。  Directive  先从定义一个简单的指令开始。 定义一个指令本质上是在HTML中通过元素、属性、类或注释来添加功能。AngularJS 的内置指令都是以 ng 开头，如果想自定义指令，建议自定义一个前缀代表自己的命名空间。这里我们先使用 my 作为前缀:">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-12-13T02:41:37.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AngularJS-自定义指令">
+<meta name="twitter:description" content="这一篇从自定义指令出发，记录了定义一个指令时影响指令行为的各种因素。试着感受这些因素，让自己更高效地编写AngularJS应用。  Directive  先从定义一个简单的指令开始。 定义一个指令本质上是在HTML中通过元素、属性、类或注释来添加功能。AngularJS 的内置指令都是以 ng 开头，如果想自定义指令，建议自定义一个前缀代表自己的命名空间。这里我们先使用 my 作为前缀:">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://syjun.github.io/2017/08/08/angularjs-20170808AngularJS-自定义指令/"/>
+
+
+
+
+
+  <title>AngularJS-自定义指令 | 灰色の幽默</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b8197adc4b3f693d9f3c14c792e39266";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">灰色の幽默</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">路漫漫其修远兮,吾将上下而求索</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://syjun.github.io/2017/08/08/angularjs-20170808AngularJS-自定义指令/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shinn">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="灰色の幽默">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">AngularJS-自定义指令</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-08T09:11:49+08:00">
+                2017-08-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Angular/" itemprop="url" rel="index">
+                    <span itemprop="name">Angular</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这一篇从自定义指令出发，记录了定义一个指令时影响指令行为的各种因素。试着感受这些因素，让自己更高效地编写AngularJS应用。</p>
+<p><strong> Directive </strong></p>
+<p>先从定义一个简单的指令开始。 定义一个指令本质上是在HTML中通过元素、属性、类或注释来添加功能。<code>AngularJS</code> 的内置指令都是以 <code>ng</code> 开头，如果想自定义指令，建议自定义一个前缀代表自己的命名空间。<br>这里我们先使用 <code>my</code> 作为前缀:</p>
+<a id="more"></a>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> myApp = angular.module(<span class="string">'myApp'</span>, [])</div><div class="line">    .directive(<span class="string">'myDirective'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        restrict: <span class="string">'A'</span>,</div><div class="line">        replace: <span class="literal">true</span>,</div><div class="line">        template: <span class="string">'&lt;p&gt;Kavlez&lt;/p&gt;'</span></div><div class="line">    &#125;;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>如此一来，我们可以这样使用，注意命名是 <strong> camel-case </strong>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;my-directive /&gt;</div><div class="line">&lt;!-- &lt;my-directive&gt;&lt;p&gt;Kavlez&lt;/p&gt;&lt;/my-directive&gt; --&gt;</div></pre></td></tr></table></figure>
+<p><code>directive()</code> 接受两个参数</p>
+<ul>
+<li>name：字符串，指令的名字</li>
+<li>factory_function：函数，指令的行为</li>
+</ul>
+<p>应用启动时，以name作为该应用的标识注册factory_function返回的对象。在factory_function中，我们可以设置一些选项来改变指令的行为。</p>
+<p>下面记录一下定义指令时用到的选项</p>
+<h2 id="restrict-（string）"><a href="#restrict-（string）" class="headerlink" title="restrict （string）"></a>restrict （string）</h2><p>该属性用于定义指令以什么形式被使用，这是一个可选参数，本文开头定义的指令用的也是A，其实该选项默认为A。 也就是元素（E）、属性（A）、类（C）、注释（M）(ps:EMAC? EMACS? 挺好记哈)<br>比如上面定义的 <code>myDirective</code> ，可以以任何形式调用。</p>
+<ul>
+<li><p>E（元素）</p>
+  <figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">my-directive</span>&gt;</span><span class="tag">&lt;/<span class="name">my-directive</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>A（属性，默认值）</p>
+  <figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">my-directive</span>=<span class="string">"expression"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>C（类名）</p>
+  <figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"my-directive:expression;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>M（注释）</p>
+  <figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">--directive:my-directive</span> <span class="attr">expression--</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="priority-Number"><a href="#priority-Number" class="headerlink" title="priority (Number)"></a>priority (Number)</h2><p>也就是优先级，默认为0。在同一元素上声明了多个指令时，根据优先级决定哪个先被调用。 如果 <code>priority 相同，则按声明顺序调用。另外，</code>no-repeat` 是所有内置指令中优先级最高的。</p>
+<h2 id="terminal-Boolean"><a href="#terminal-Boolean" class="headerlink" title="terminal (Boolean)"></a>terminal (Boolean)</h2><p>终端? 而且还是Boolean? 被名字吓到了，其实terminal的意思是是否停止当前元素上比该指令优先级低的指令。 但是相同的优先级还是会执行。比如，我们在 <code>my-directive</code> 的基础上再加一个指令:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">.directive(&apos;momDirective&apos;,function($rootScope)&#123;</div><div class="line">    return&#123;</div><div class="line">        priority:3,</div><div class="line">        terminal:true</div><div class="line">    &#125;;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>调用发现 <code>my-directive</code> 不会生效:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">mom-directive</span> <span class="attr">my-directive</span>=<span class="string">"content"</span> &gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="template-String-Function"><a href="#template-String-Function" class="headerlink" title="template (String/Function)"></a>template (String/Function)</h2><p>至少得输出点什么吧? 但template也是可选的。String类型时，template可以是一段HTML。Function类型时，template是一个接受两个参数的函数，分别为：</p>
+<ul>
+<li>tElement</li>
+<li>tAttrs<br>函数返回一段字符串作为模板。</li>
+</ul>
+<h2 id="templateUrl-String-Function"><a href="#templateUrl-String-Function" class="headerlink" title="templateUrl (String/Function)"></a>templateUrl (String/Function)</h2><p>这个就和上面的template很像了，只不过这次是通过URL请求一个模板。 String类型时，templateURL自然是一个URL。 Function类型时返回一段字符串作为模板URL。</p>
+<h2 id="replace-Boolean-String"><a href="#replace-Boolean-String" class="headerlink" title="replace (Boolean/String)"></a>replace (Boolean/String)</h2><p>默认值为false，以文章开头定义的指令为例，假设我们这样调用了指令</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">my-directive</span>&gt;</span><span class="tag">&lt;/<span class="name">my-directive</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>replace为true时，输出:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Kavlez<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>replace为false时，输出:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">my-directive</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>Kavlez<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">my-directive</span>&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="transclude-Boolean"><a href="#transclude-Boolean" class="headerlink" title="transclude (Boolean)"></a>transclude (Boolean)</h2><p>该选项默认为false，翻译过来叫’嵌入’，感觉还是有些生涩。<code>template</code> 和 <code>scope</code> 已经可以做很多事情了，但有一点不足。比如在原有元素的基础上添加内容，<code>transclude</code> 的例子如下:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">body</span> <span class="attr">ng-app</span>=<span class="string">"myApp"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">textarea</span> <span class="attr">ng-model</span>=<span class="string">"content"</span>&gt;</span><span class="tag">&lt;/<span class="name">textarea</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">my-directive</span> <span class="attr">title</span>=<span class="string">"Kavlez"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">hr</span>&gt;</span></div><div class="line">        &#123;&#123;content&#125;&#125;</div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></div><div class="line"><span class="javascript"><span class="keyword">var</span> myApp = angular.module(<span class="string">'myApp'</span>, [])</span></div><div class="line"><span class="javascript">.directive(<span class="string">'myDirective'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></div><div class="line"><span class="javascript">    <span class="keyword">return</span> &#123;</span></div><div class="line"><span class="javascript">        restrict: <span class="string">'EA'</span>,</span></div><div class="line"><span class="undefined">        scope: &#123;</span></div><div class="line"><span class="javascript">            title: <span class="string">'@'</span>,</span></div><div class="line"><span class="javascript">            content: <span class="string">'='</span></span></div><div class="line"><span class="undefined">        &#125;,</span></div><div class="line"><span class="javascript">        transclude: <span class="literal">true</span>,</span></div><div class="line"><span class="xml">        template: '<span class="tag">&lt;<span class="name">h2</span> <span class="attr">class</span>=<span class="string">"header"</span>&gt;</span>&#123;&#123; title &#125;&#125;<span class="tag">&lt;/<span class="name">h2</span>&gt;</span>\</span></div><div class="line"><span class="javascript">        &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">"content"</span> ng-transclude&gt;<span class="xml"><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><span class="string">'</span></span></div><div class="line"><span class="undefined">    &#125;;</span></div><div class="line"><span class="undefined">&#125;);</span></div><div class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>发现div下的hr并没有被移除，就是这样的效果。注意不要忘了在模板中声明 <code>ng-transclude</code> 。</p>
+<h2 id="scope-Boolean-Object"><a href="#scope-Boolean-Object" class="headerlink" title="scope (Boolean/Object)"></a>scope (Boolean/Object)</h2><p>默认为false，true时会从父作用域继承并创建一个自己的作用域。而 <code>ng-controller</code> 的作用也是从父作用域继承并创建一个新的作用域。比如这样，离开了自己的作用域就被打回原形了:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-init</span>=<span class="string">"content='from root'"</span>&gt;</span></div><div class="line">    &#123;&#123;content&#125;&#125;</div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-controller</span>=<span class="string">"AncestorController"</span>&gt;</span></div><div class="line">        &#123;&#123;content&#125;&#125;     </div><div class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-controller</span>=<span class="string">"ChildController"</span>&gt;</span></div><div class="line">            &#123;&#123;content&#125;&#125;     </div><div class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">        &#123;&#123;content&#125;&#125; </div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">    &#123;&#123;content&#125;&#125; </div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"></div><div class="line">.controller('ChildController', function($scope) &#123;</div><div class="line">    $scope.content = 'from child';</div><div class="line">&#125;)</div><div class="line">.controller('AncestorController', function($scope) &#123;</div><div class="line">    $scope.content = 'from ancestor';</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>但不要误解，指令嵌套并不一定会改变它的作用域。既然 <code>true</code> 时会从父作用域继承并创建一个自己的作用域，那么我们来试试改为 <code>false</code> 会是什么样子:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-init</span>=<span class="string">"myProperty='test'"</span>&gt;</span></div><div class="line">    &#123;&#123; myProperty &#125;&#125;</div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">my-directive</span> <span class="attr">ng-init</span>=<span class="string">"myProperty = 'by my-directive'"</span>&gt;</span></div><div class="line">        &#123;&#123; myProperty &#125;&#125;</div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">    &#123;&#123; myProperty &#125;&#125;</div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"></div><div class="line">.directive('myDirective', function($rootScope) &#123;</div><div class="line">    return &#123;</div><div class="line">        scope:false</div><div class="line">    &#125;;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>显然，结果是三行’by my-directive’。非true即false? naive!其实最麻烦的还是隔离作用域，</p>
+<p>我们稍微改动一下myDirective，改为输出 <code>&lt;p&gt;&lt;/p&gt;</code> 。于是我试着这样定义:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">body</span> <span class="attr">ng-app</span>=<span class="string">"myApp"</span> &gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">ng-controller</span>=<span class="string">"myController"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">my-directive</span>=<span class="string">"I have to leave."</span> &gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">        &#123;&#123;myDirective&#125;&#125;</div><div class="line">    <span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></div><div class="line"><span class="javascript"><span class="keyword">var</span> myApp = angular.module(<span class="string">'myApp'</span>, [])</span></div><div class="line"><span class="javascript">.directive(<span class="string">'myDirective'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">$rootScope</span>) </span>&#123;</span></div><div class="line"><span class="javascript">    $rootScope.myDirective = <span class="string">'from rootScope'</span>;</span></div><div class="line"><span class="javascript">    <span class="keyword">return</span> &#123;</span></div><div class="line"><span class="undefined">        priority:1000,</span></div><div class="line"><span class="javascript">        restrict: <span class="string">'A'</span>,</span></div><div class="line"><span class="javascript">        replace: <span class="literal">true</span>,</span></div><div class="line"><span class="undefined">        scope: &#123;</span></div><div class="line"><span class="javascript">            myDirective: <span class="string">'@'</span>,</span></div><div class="line"><span class="undefined">        &#125;,</span></div><div class="line"><span class="xml">        template: '<span class="tag">&lt;<span class="name">p</span>&gt;</span>&#123;&#123;myDirective&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span>'</span></div><div class="line"><span class="undefined">    &#125;;</span></div><div class="line"><span class="undefined">&#125;)</span></div><div class="line"><span class="javascript">.controller(<span class="string">'myController'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">$scope</span>)</span>&#123;</span></div><div class="line"><span class="javascript">    $scope.myDirective = <span class="string">'from controller'</span>;</span></div><div class="line"><span class="undefined">&#125;);</span></div><div class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>这里需要注意的不是 <code>@</code> ，重点是隔离作用域。<br>根据上面的例子输出，template中的 <code></code> 不会影响到其他作用域。<br>我们再试试这样:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">ng-model</span>=<span class="string">"content"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">ng-controller</span>=<span class="string">"myController"</span> &gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">my-directive</span>=<span class="string">"&#123;&#123;content&#125;&#125;"</span> &gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">    &#123;&#123;content&#125;&#125;</div><div class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>发现大家都在一起变，也就是说值是通过复制DOM属性并传递到隔离作用域。 <code>ng-model</code> 是个强大的指令，它将自己的隔离作用域和DOM作用域连在一起，这样就是一个双向数据绑定。</p>
+<p>如何向指令的隔离作用域中传递数据，这里用了 <code>@</code> 。或者也可以写成 <code>@myDirective</code> ，也就是说换个名字什么的也可以，比如我用 <code>@myCafe</code> 什么的给 <code>myDirective</code> 赋值也是没问题的，总之是和DOM属性进行绑定。</p>
+<p>另外，我们也可以用 <code>=</code> 进行双向绑定，将本地作用域的属性同父级作用域的属性进行双向绑定。比如下面的例子中，隔离作用域里的内容只能是’abc’ :</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">body</span> <span class="attr">ng-app</span>=<span class="string">"myApp"</span> <span class="attr">ng-init</span>=<span class="string">"content='abc'"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">ng-controller</span>=<span class="string">"myController"</span> &gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">ng-model</span>=<span class="string">"content"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">my-directive</span>=<span class="string">"content"</span> &gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">        &#123;&#123;content&#125;&#125;</div><div class="line">    <span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></div><div class="line"><span class="javascript"><span class="keyword">var</span> myApp = angular.module(<span class="string">'myApp'</span>, [])</span></div><div class="line"><span class="javascript">.directive(<span class="string">'myDirective'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">$rootScope</span>) </span>&#123;</span></div><div class="line"><span class="javascript">    <span class="keyword">return</span> &#123;</span></div><div class="line"><span class="undefined">        priority:1000,</span></div><div class="line"><span class="javascript">        restrict: <span class="string">'A'</span>,</span></div><div class="line"><span class="javascript">        replace: <span class="literal">true</span>,</span></div><div class="line"><span class="undefined">        scope: &#123;</span></div><div class="line"><span class="javascript">            myDirective: <span class="string">'='</span>,</span></div><div class="line"><span class="undefined">        &#125;,</span></div><div class="line"><span class="xml">        template: '<span class="tag">&lt;<span class="name">p</span>&gt;</span>from myDirective:&#123;&#123;myDirective&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span>'</span></div><div class="line"><span class="undefined">    &#125;;</span></div><div class="line"><span class="undefined">&#125;)  </span></div><div class="line"><span class="javascript">.controller(<span class="string">'myController'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">$scope</span>)</span>&#123;</span></div><div class="line"><span class="javascript">    $scope.content = <span class="string">'from controller'</span>;</span></div><div class="line"><span class="undefined">&#125;);</span></div><div class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>在隔离作用域访问指令外部的作用域的方法还有一种，就是 <code>&amp;</code> 。我们可以使用 <code>&amp;</code> 与父级作用域的函数进行绑定，比如下面的例子:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">body</span> <span class="attr">ng-app</span>=<span class="string">"myApp"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-controller</span>=<span class="string">"myController"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">table</span> <span class="attr">border</span>=<span class="string">'1'</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">tr</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">td</span>&gt;</span>From<span class="tag">&lt;/<span class="name">td</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">ng-model</span>=<span class="string">"from"</span>/&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">tr</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">td</span>&gt;</span>To<span class="tag">&lt;/<span class="name">td</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">ng-model</span>=<span class="string">"to"</span>/&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">tr</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">td</span>&gt;</span>Content<span class="tag">&lt;/<span class="name">td</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">textarea</span> <span class="attr">cols</span>=<span class="string">"30"</span> <span class="attr">rows</span>=<span class="string">"10"</span> <span class="attr">ng-model</span>=<span class="string">"content"</span>&gt;</span><span class="tag">&lt;/<span class="name">textarea</span>&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">tr</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">td</span>&gt;</span>Preview:<span class="tag">&lt;/<span class="name">td</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">scope-example</span> <span class="attr">to</span>=<span class="string">"to"</span> <span class="attr">on-send</span>=<span class="string">"sendMail(content)"</span> <span class="attr">from</span>=<span class="string">"from"</span> /&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">table</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></div><div class="line"><span class="javascript"><span class="keyword">var</span> myApp = angular.module(<span class="string">'myApp'</span>, [])</span></div><div class="line"><span class="javascript">.controller(<span class="string">'myController'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">$scope</span>)</span>&#123;</span></div><div class="line"><span class="javascript">    $scope.sendMail=<span class="function"><span class="keyword">function</span>(<span class="params">content</span>)</span>&#123;</span></div><div class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'content is:::'</span>+content);</span></div><div class="line"><span class="undefined">    &#125;</span></div><div class="line"><span class="undefined">&#125;)</span></div><div class="line"><span class="javascript">.directive(<span class="string">'scopeExample'</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span></div><div class="line"><span class="javascript">    <span class="keyword">return</span>&#123;</span></div><div class="line"><span class="javascript">        restrict:<span class="string">'EA'</span>,</span></div><div class="line"><span class="undefined">        scope: &#123;</span></div><div class="line"><span class="javascript">            to: <span class="string">'='</span>, </span></div><div class="line"><span class="javascript">            <span class="keyword">from</span>: <span class="string">'='</span> ,</span></div><div class="line"><span class="javascript">            send: <span class="string">'&amp;onSend'</span></span></div><div class="line"><span class="undefined">        &#125;,</span></div><div class="line"><span class="xml">        template:'<span class="tag">&lt;<span class="name">div</span>&gt;</span>From:&#123;&#123;from&#125;&#125;<span class="tag">&lt;<span class="name">br</span>&gt;</span>\</span></div><div class="line"><span class="xml">        To:&#123;&#123;to&#125;&#125;<span class="tag">&lt;<span class="name">br</span>&gt;</span>\</span></div><div class="line"><span class="xml">        <span class="tag">&lt;<span class="name">button</span> <span class="attr">ng-click</span>=<span class="string">"send()"</span>&gt;</span>Send<span class="tag">&lt;/<span class="name">button</span>&gt;</span>\</span></div><div class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span>'</span></div><div class="line"><span class="undefined">    &#125;</span></div><div class="line"><span class="undefined">&#125;)</span></div><div class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="controller-String-Function"><a href="#controller-String-Function" class="headerlink" title="controller (String/Function)"></a>controller (String/Function)</h2><p>控制器也可以在指令里定义，比如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">.directive(&apos;myDirective&apos;, function() &#123;</div><div class="line">    restrict: &apos;A&apos;,</div><div class="line">    controller: &apos;myController&apos;</div><div class="line">&#125;).controller(&apos;myController&apos;, function($scope, $element, $attrs,$transclude) &#123;</div><div class="line">    //...</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>相同的效果，也可以这样声明:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">directive(&apos;myDirective&apos;, function() &#123;</div><div class="line">    restrict: &apos;A&apos;,</div><div class="line">    controller:function($scope, $element, $attrs, $transclude) &#123;</div><div class="line">        //...</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h2 id="controllerAs-String"><a href="#controllerAs-String" class="headerlink" title="controllerAs (String)"></a>controllerAs (String)</h2><p>可以从名字和类型看出，这个选项是用来设置控制器的别名的。 比如这样:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">directive(&apos;myDirective&apos;, function() &#123;</div><div class="line">    return &#123;</div><div class="line">        restrict: &apos;A&apos;,</div><div class="line">        template: &apos;&lt;p&gt;&#123;&#123; myController.name &#125;&#125;&lt;/p&gt;&apos;,</div><div class="line">        controllerAs: &apos;myController&apos;,</div><div class="line">        controller: function() &#123;</div><div class="line">            this.name = &quot;Kavlez&quot;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h2 id="compile-Object-Function"><a href="#compile-Object-Function" class="headerlink" title="compile (Object/Function)"></a>compile (Object/Function)</h2><p>虽说这个东西不是很常用吧，但却是值得了解的选项。 <code>compile</code> 和 <code>link</code> ，这两个选项关系到AngularJS的生命周期。</p>
+<p>先在这里简单记录一下我对生命周期的认识。</p>
+<ul>
+<li>应用启动前，所有的指令以文本的形式存在。</li>
+<li>应用启动后便开始进行compile和link，DOM开始变化，作用域与HTML进行绑定。</li>
+<li>在编译阶段，AngularJS会遍历整个HTML并处理已声明的指令。</li>
+<li>一个指令的模板中可能使用了另外一个指令，这个指令的模板中可能包含其他指令，如此层层下来便是一个模板树。</li>
+<li>在DOM尚未进行数据绑定时对DOM进行操作开销相对较小，这时像ng-repeat之类的指令对DOM进行操作则再合适不过了。</li>
+<li>我们可以用编译函数访问编译后的DOM，在数据绑定之前用编译函数对模板DOM进行转换，编译函数会返回模板函数。</li>
+<li>也就是说，设置compile函数的意义在于:在指令和实时数据被放到DOM中之前修改DOM。 此时完全可以毫无顾虑地操作DOM。</li>
+<li>接着我们便可以进入下一个阶段，链接阶段。</li>
+<li>最后，模板函数传递给指令指定的链接函数，链接函数对作用域和DOM进行链接。</li>
+</ul>
+<p>好了，接下来我们就试试compile:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">body</span> <span class="attr">ng-app</span>=<span class="string">"myApp"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">my-directive</span> <span class="attr">ng-model</span>=<span class="string">"myName"</span>&gt;</span><span class="tag">&lt;/<span class="name">my-directive</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></div><div class="line"><span class="javascript"><span class="keyword">var</span> myApp = angular.module(<span class="string">'myApp'</span>, [])</span></div><div class="line"><span class="javascript">.directive(<span class="string">'myDirective'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">$rootScope</span>) </span>&#123;</span></div><div class="line"><span class="javascript">    $rootScope.myName = <span class="string">'Kavlez'</span>;</span></div><div class="line"><span class="javascript">    <span class="keyword">return</span> &#123;</span></div><div class="line"><span class="javascript">        restrict: <span class="string">'EA'</span>,</span></div><div class="line"><span class="javascript">        compile:<span class="function"><span class="keyword">function</span>(<span class="params">tEle, tAttrs, transcludeFn</span>) </span>&#123;</span></div><div class="line"><span class="javascript">            <span class="keyword">var</span> h2 = angular.element(<span class="string">'&lt;h2&gt;&lt;/h2&gt;'</span>);</span></div><div class="line"><span class="javascript">            h2.attr(<span class="string">'type'</span>, tAttrs.type);</span></div><div class="line"><span class="javascript">            h2.attr(<span class="string">'ng-model'</span>, tAttrs.ngModel);</span></div><div class="line"><span class="javascript">            h2.html(<span class="string">"hello &#123;&#123;"</span>+tAttrs.ngModel+<span class="string">"&#125;&#125;"</span>);</span></div><div class="line"><span class="undefined">            tEle.replaceWith(h2);</span></div><div class="line"><span class="undefined">        &#125;</span></div><div class="line"><span class="undefined">    &#125;;</span></div><div class="line"><span class="undefined">&#125;);</span></div><div class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Angular/" rel="tag"># Angular</a>
+          
+            <a href="/tags/directive/" rel="tag"># directive</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/17/javascript-20170717javascript-运行机制-Event-Loop/" rel="next" title="JavaScript 运行机制详解: Event Loop">
+                <i class="fa fa-chevron-left"></i> JavaScript 运行机制详解: Event Loop
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpeg"
+               alt="Shinn" />
+          <p class="site-author-name" itemprop="name">Shinn</p>
+           
+              <p class="site-description motion-element" itemprop="description">你总是这样轻言放弃的话，无论过多久都只会原地踏步。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/SYJUN" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#restrict-（string）"><span class="nav-number">1.</span> <span class="nav-text">restrict （string）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#priority-Number"><span class="nav-number">2.</span> <span class="nav-text">priority (Number)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#terminal-Boolean"><span class="nav-number">3.</span> <span class="nav-text">terminal (Boolean)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#template-String-Function"><span class="nav-number">4.</span> <span class="nav-text">template (String/Function)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#templateUrl-String-Function"><span class="nav-number">5.</span> <span class="nav-text">templateUrl (String/Function)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#replace-Boolean-String"><span class="nav-number">6.</span> <span class="nav-text">replace (Boolean/String)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#transclude-Boolean"><span class="nav-number">7.</span> <span class="nav-text">transclude (Boolean)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scope-Boolean-Object"><span class="nav-number">8.</span> <span class="nav-text">scope (Boolean/Object)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#controller-String-Function"><span class="nav-number">9.</span> <span class="nav-text">controller (String/Function)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#controllerAs-String"><span class="nav-number">10.</span> <span class="nav-text">controllerAs (String)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#compile-Object-Function"><span class="nav-number">11.</span> <span class="nav-text">compile (Object/Function)</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shinn</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
